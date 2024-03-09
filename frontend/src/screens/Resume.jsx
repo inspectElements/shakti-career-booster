@@ -16,7 +16,7 @@ const Resume = () => {
                 style={{ display: "none" }}
                 id="resume"
                 type="file"
-                onChange={() => navigate("/landing")}
+                onChange={() => navigate("/profile")}
             />
         </section>
     );
