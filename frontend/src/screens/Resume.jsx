@@ -27,14 +27,19 @@ const Resume = () => {
             const storageRef = ref(storage, `files/${unique_id + file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on("state_changed",
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                        console.log(downloadURL)
+                async () => {
+                    try {
+                        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
                         setFileDownloadURL(downloadURL);
-                        alert(downloadURL)
-                    });
-                    alert("Uploaded successfully");
-                },
+                        console.log("Uploaded successfully:", downloadURL);
+                    } catch (err) {
+                        setError(err); // Store error in state
+                        console.error(err);
+                    } finally {
+                        setUploading(false);
+                    }
+                }
+
             );
 
         } catch (e) {
@@ -58,14 +63,14 @@ const Resume = () => {
                 style={{ display: "none" }}
                 id="resume"
                 type="file"
-                onChange={() => {
-                    handleFileChange, navigate("/landing");
+                onChange={(e) => {
+                    handleFileChange(e)
                 }}
             />
-            <button 
-            onClick={handleUpload}
-            className="absolute top-[75%] left-[48%] middle none rounded-lg bg-[#1F243E] py-3 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer"
-            data-ripple-light="true"
+            <button
+                onClick={handleUpload}
+                className="absolute top-[75%] left-[48%] middle none rounded-lg bg-[#1F243E] py-3 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer"
+                data-ripple-light="true"
             >
                 Done
             </button>

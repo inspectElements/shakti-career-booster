@@ -1,6 +1,12 @@
+// OcrComponent.jsx
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-// import { PuffLoader } from "@grasseggiare/react-loader-spinner";
+import Tesseract from "tesseract.js";
+// import { pdfjs } from 'react-pdf';
+
+
+
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
 const OcrComponent = ({ fileDownloadURL }) => {
   const [numPages, setNumPages] = useState(null);
@@ -42,11 +48,22 @@ const OcrComponent = ({ fileDownloadURL }) => {
 
     const fetchFile = async () => {
       try {
-        const pdfBlob = await fetch(fileDownloadURL).then((response) => response.blob());
+        console.log("Fetching PDF from:", fileDownloadURL);
+
+        const response = await fetch(fileDownloadURL);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch PDF. HTTP status: ${response.status}`);
+        }
+
+        const pdfBlob = await response.blob();
+
+        console.log("Fetched PDF blob:", pdfBlob);
+
         const dataBuffer = await pdfBlob.arrayBuffer();
         const pdf = await pdfjs.getDocument({ data: dataBuffer }).promise;
 
-        await extractTextFromPdf(pdf);
+          await extractTextFromPdf(pdf);
 
         setIsLoading(false);
       } catch (err) {
@@ -58,11 +75,13 @@ const OcrComponent = ({ fileDownloadURL }) => {
 
     fetchFile();
   }, [fileDownloadURL]);
-
+  console.log(ocrText);
   return (
     <div className="mt-8">
       {isLoading ? (
-        <PuffLoader color="#3498db" size={100} type="Puff" />
+        <div>
+          <p>Loading PDF...</p>
+        </div>
       ) : error ? (
         <p className="text-red-500">{error.message}</p>
       ) : numPages ? (
@@ -74,7 +93,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
           <p>
             Page {pageNumber} of {numPages}
           </p>
-          <pre className="whitespace-pre-wrap">{ocrText}</pre>
+          <p className="whitespace-pre-wrap">{ocrText}</p>
         </>
       ) : null}
     </div>
