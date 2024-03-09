@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
-// import { PuffLoader } from "@grasseggiare/react-loader-spinner";
 
 const OcrComponent = ({ fileDownloadURL }) => {
   const [numPages, setNumPages] = useState(null);
@@ -25,7 +24,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
     for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
       const page = await pdf.getPage(pageNum);
       const pageText = await extractTextFromPage(page);
-      text += pageText + "\n"; // Add a new line between pages
+      text += pageText + "\n";
     }
 
     setOcrText(text);
