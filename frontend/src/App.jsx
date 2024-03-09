@@ -9,9 +9,9 @@ const router = createBrowserRouter([
         Component: Landing,
     },
     {
-      path: "/resume-upload",
-      Component: Resume,
-  },
+        path: "/resume-upload",
+        Component: Resume,
+    },
 ]);
 function App() {
     return (
