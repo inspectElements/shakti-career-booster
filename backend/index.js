@@ -48,11 +48,11 @@ let messageInterview = {};
 app.post("/interview/start", async (req, res) => {
     const id = req.body.id;
     let messages = [];
-    
+
     messageInterview[id] = [initialInterview];
     messages = messageInterview[id];
     const response = await openai.createChatCompletion({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages,
     });
     messages.push(response.data.choices[0].message);
@@ -76,7 +76,7 @@ app.post("/interview/answer", async (req, res) => {
         res.json("Interview not started");
     }
     const response = await openai.createChatCompletion({
-        model: "gpt-4",
+        model: "gpt-3.5-turbo",
         messages,
     });
     messages.push(response.data.choices[0].message);
