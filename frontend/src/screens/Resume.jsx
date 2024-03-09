@@ -26,7 +26,6 @@ const Resume = () => {
             setUploading(true);
             const storageRef = ref(storage, `files/${unique_id + file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
-<<<<<<< HEAD
             uploadTask.on("state_changed",
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
@@ -44,23 +43,6 @@ const Resume = () => {
             setUploading(false);
         }
 
-=======
-            uploadTask.on(
-                "state_changed",
-                (error) => {
-                    alert(error);
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(
-                        (downloadURL) => {
-                            console.log(downloadURL);
-                            alert(downloadURL);
-                        }
-                    );
-                }
-            );
-        } catch (e) {}
->>>>>>> 92614cc1b466f1c0e77c35c3c5f5dd4f41f2a0b1
     };
 
     return (
@@ -80,7 +62,6 @@ const Resume = () => {
                     handleFileChange, navigate("/landing");
                 }}
             />
-<<<<<<< HEAD
             <button 
             onClick={handleUpload}
             className="absolute top-[75%] left-[48%] middle none rounded-lg bg-[#1F243E] py-3 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer"
@@ -92,8 +73,6 @@ const Resume = () => {
 
 
             {fileDownloadURL && <OcrComponent fileDownloadURL={fileDownloadURL} />}
-=======
->>>>>>> 92614cc1b466f1c0e77c35c3c5f5dd4f41f2a0b1
         </section>
     );
 };
