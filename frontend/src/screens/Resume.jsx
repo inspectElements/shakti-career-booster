@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -13,8 +13,6 @@ const Resume = () => {
     const [showSpinner, setShowSpinner] = useState(false);
     const [showButton, setShowButton] = useState(false);
     const [showImage, setShowImage] = useState(true);
-
-    const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
@@ -37,9 +35,6 @@ const Resume = () => {
                     console.log(downloadURL);
                     setFileDownloadURL(downloadURL);
                 });
-                setTimeout(() => {
-                    navigate("/profile");
-                }, 5000); 
             });
         } catch (e) {
             console.log(e);
