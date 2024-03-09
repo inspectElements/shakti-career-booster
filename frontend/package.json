@@ -12,12 +12,16 @@
   "dependencies": {
     "@material-tailwind/react": "^2.1.9",
     "firebase": "^10.8.1",
+    "pdf-parse": "^1.1.1",
+    "pdfjs-dist": "^4.0.379",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-pdf": "^7.7.1",
     "react-router-dom": "^6.22.3",
     "react-speech": "^1.0.2",
     "react-speech-recognition": "^3.10.0",
     "regenerator-runtime": "^0.14.1",
+    "tesseract.js": "^5.0.5",
     "uuidv4": "^6.2.13"
   },
   "devDependencies": {

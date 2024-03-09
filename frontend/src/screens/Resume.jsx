@@ -3,9 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { v4 as uuid } from "uuid";
+import OcrComponent from "../components/OcrComponent.jsx";
+
 
 const Resume = () => {
     const [file, setFile] = useState(null);
+    const [fileDownloadURL, setFileDownloadURL] = useState(null);
     const [uploading, setUploading] = useState(false);
 
     const navigate = useNavigate();
@@ -24,20 +27,22 @@ const Resume = () => {
             const storageRef = ref(storage, `files/${unique_id+file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on("state_changed",
-                (error) => {
-                    alert(error);
-                },
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
                         console.log(downloadURL)
+                        setFileDownloadURL(downloadURL);
                         alert(downloadURL)
                     });
-                }
+                    alert("Uploaded successfully");
+                },
             );
 
         } catch (e) {
-
+            console.log(e);
+        } finally {
+            setUploading(false);
         }
+
     };
 
 
@@ -63,6 +68,10 @@ const Resume = () => {
             >
                 Done
             </button>
+
+
+
+            {fileDownloadURL && <OcrComponent fileDownloadURL={fileDownloadURL} />}
         </section>
     );
 };
