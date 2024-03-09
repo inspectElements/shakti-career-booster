@@ -2,6 +2,7 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Landing from "./screens/Landing";
 import Resume from "./screens/Resume";
 import AiInterview from "./screens/AiInterview";
+import Profile from "./screens/Profile";
 
 const router = createBrowserRouter([
     {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
     {
         path: "/resume-upload",
         Component: Resume,
+    },
+    {
+        path: "/profile",
+        Component: Profile,
     },
 ]);
 function App() {
