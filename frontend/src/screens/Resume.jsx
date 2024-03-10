@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { storage } from "../firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import { v4 as uuid } from "uuid";
-import { Spinner } from "@material-tailwind/react";
+import RingLoader from "react-spinners/RingLoader";
 import OcrComponent from "../components/OcrComponent.jsx";
 
 const Resume = () => {
@@ -14,11 +14,13 @@ const Resume = () => {
     const [showButton, setShowButton] = useState(false);
     const [showImage, setShowImage] = useState(true);
 
+    const navigate = useNavigate();
+
     const handleFileChange = (event) => {
         const selectedFile = event.target.files[0];
         setFile(selectedFile);
-        setShowButton(true); 
-        setShowImage(false); 
+        setShowButton(true);
+        setShowImage(false);
     };
 
     const handleUpload = async () => {
@@ -27,7 +29,7 @@ const Resume = () => {
         }
         const unique_id = uuid();
         try {
-            setUploading(true);
+            setShowSpinner(true);
             const storageRef = ref(storage, `files/${unique_id + file.name}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
             uploadTask.on("state_changed", () => {
@@ -35,6 +37,10 @@ const Resume = () => {
                     console.log(downloadURL);
                     setFileDownloadURL(downloadURL);
                 });
+                setTimeout(() => {
+                    setShowSpinner(false);
+                    navigate("/dashboard");
+                }, 3000);
             });
         } catch (e) {
             console.log(e);
@@ -63,7 +69,7 @@ const Resume = () => {
                     setShowSpinner(false);
                 }}
             />
-            {showButton && (
+            {showButton && !showSpinner && (
                 <button
                     onClick={handleUpload}
                     className="absolute top-[45%] left-[39.5%] middle none rounded-lg bg-[#1F243E] py-3 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer"
@@ -73,7 +79,13 @@ const Resume = () => {
                 </button>
             )}
 
-            {showSpinner && <Spinner color="blue" size="large" />}
+            {showSpinner && (
+                <RingLoader
+                    color="#FF5093"
+                    size={70}
+                    className="absolute top-[45%] left-[48%]"
+                />
+            )}
             {fileDownloadURL && (
                 <OcrComponent fileDownloadURL={fileDownloadURL} />
             )}
