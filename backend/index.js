@@ -55,7 +55,7 @@ app.post("/interview/start", async (req, res) => {
     messageInterview[id] = [
         initialInterview,
         {
-            role: "function",
+            role: "assistant",
             content: "interviewee's resume" + JSON.stringify(ats),
         },
     ];

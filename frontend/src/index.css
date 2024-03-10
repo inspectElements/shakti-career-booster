@@ -130,3 +130,14 @@ body {
   top: 84px;
   right: 40px;
 }
+
+.interview-header {
+  background-image: url("interview-header.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 10%;
+  width: 95%;
+  z-index: 100;
+  margin-top: 15px;
+}
