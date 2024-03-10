@@ -163,3 +163,14 @@ body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.result-content {
+  background-image: url("result-content.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100%;
+  width: 70%;
+  margin-top: -11%;
+}

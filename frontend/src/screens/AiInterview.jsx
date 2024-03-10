@@ -48,7 +48,6 @@ const AiInterview = () => {
     };
     return (
         <div className="h-screen w-screen flex items-center justify-center">
-            {/* <p>{transcript}</p> */}
             <div className="h-80 w-80">
                 <button
                     onClick={() => {

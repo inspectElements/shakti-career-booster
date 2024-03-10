@@ -1,10 +1,11 @@
 import "regenerator-runtime/runtime";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
 import { Power, Mic } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import RingLoader from "react-spinners/RingLoader";
 
 const AiChat = (props) => {
     return (
@@ -44,12 +45,14 @@ const InterviewSystem = () => {
     let navigate = useNavigate();
     const { transcript } = useSpeechRecognition();
     const [state, setState] = useState(-1);
+    const [showSpinner, setShowSpinner] = useState(false);
     const startInterview = () => {
         let video = navigator.mediaDevices.getUserMedia({ video: true });
         video.then((stream) => {
             video_ref.current.srcObject = stream;
             video_ref.current.play();
         });
+        setShowSpinner(true); // Show spinner before starting interview
         fetch("http://localhost:4000/interview/start", {
             method: "POST",
             headers: {
@@ -58,9 +61,21 @@ const InterviewSystem = () => {
             body: JSON.stringify({ id: "jdojdw-jdwijd" }),
         })
             .then((res) => res.json())
-            .then((data) => setMessages([{ content: data, type: "system" }]));
+            .then((data) => {
+                setMessages([{ content: data, type: "system" }]);
+                setShowSpinner(false); // Hide spinner once interview starts
+            });
         setTime(new Date().getTime());
     };
+
+    useEffect(() => {
+        if (state === 0) {
+            SpeechRecognition.startListening({
+                continuous: true,
+                interimResults: true,
+            });
+        }
+    }, [state]);
 
     let [time, setTime] = useState(0);
     const stop = () => {
@@ -95,6 +110,7 @@ const InterviewSystem = () => {
     let video_ref = useRef(null);
 
     const end = () => {
+        setShowSpinner(true); // Show spinner before navigating to interview result
         fetch("http://localhost:4000/interview/complete", {
             method: "POST",
             headers: {
@@ -104,6 +120,7 @@ const InterviewSystem = () => {
         })
             .then((res) => res.json())
             .then((data) => {
+                setShowSpinner(false); // Hide spinner once interview result is received
                 navigate("/interview-result", { state: data });
             });
     };
@@ -149,14 +166,32 @@ const InterviewSystem = () => {
                         <div className="interview-header"></div>
                         <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
                         <div className="h-[75%] w-[95%] flex flex-col justify-start items-start gap-1 mt-10 !overflow-y-scroll overflow-hidden no-scrollbar">
-                            {messages.map((msg, ind) => {
-                                if (msg.type === "user") {
+                            {showSpinner ? (
+                                <div className="h-full flex justify-center items-center">
+                                    <RingLoader
+                                        color="#FF5093"
+                                        size={70}
+                                        className="absolute left-[445px] -top-[25px]"
+                                    />
+                                </div>
+                            ) : (
+                                messages.map((msg, ind) => {
+                                    if (msg.type === "user") {
+                                        return (
+                                            <MyChat
+                                                key={ind}
+                                                msg={msg.content}
+                                            />
+                                        );
+                                    }
                                     return (
-                                        <MyChat key={ind} msg={msg.content} />
+                                        <AiChat
+                                            key={ind}
+                                            msg={msg.content}
+                                        />
                                     );
-                                }
-                                return <AiChat key={ind} msg={msg.content} />;
-                            })}
+                                })
+                            )}
                         </div>
                         <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
                         <div className="h-[5%] w-full flex flex-row justify-center items-center my-6 gap-4">
