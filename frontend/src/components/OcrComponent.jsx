@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 import { useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
+
 
 pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 
@@ -12,6 +14,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
     const [ocrText, setOcrText] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -24,6 +27,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
     };
 
     const extractTextFromPdf = async (pdf) => {
+        setIsLoading(true);
         let text = "";
 
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
@@ -57,6 +61,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
 
         const fetchFile = async () => {
             try {
+                // setIsLoading(true);
                 const response = await fetch(fileDownloadURL);
                 if (!response.ok) {
                     throw new Error(
@@ -68,11 +73,10 @@ const OcrComponent = ({ fileDownloadURL }) => {
                 const pdf = await pdfjs.getDocument({ data: dataBuffer })
                     .promise;
                 await extractTextFromPdf(pdf);
-                setIsLoading(false);
             } catch (err) {
                 setError(err);
-                setIsLoading(false);
             }
+
         };
         fetchFile();
     }, [fileDownloadURL]);
@@ -81,6 +85,7 @@ const OcrComponent = ({ fileDownloadURL }) => {
         <div className="mt-8">
             {isLoading ? (
                 <div>
+                    <ClipLoader color="#4A90E2" loading={isLoading} size={35} />
                     <p>Loading PDF...</p>
                 </div>
             ) : error ? (
