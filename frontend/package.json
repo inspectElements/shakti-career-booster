@@ -23,6 +23,7 @@
     "react-speech-recognition": "^3.10.0",
     "regenerator-runtime": "^0.14.1",
     "tesseract.js": "^5.0.5",
+    "uui": "^1.0.7",
     "uuid": "^9.0.1",
     "uuidv4": "^6.2.13"
   },
