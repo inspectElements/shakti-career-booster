@@ -22,6 +22,7 @@ const AiInterview = () => {
     };
 
     let [time, setTime] = useState(0);
+
     const stop = () => {
         SpeechRecognition.stopListening();
         fetch("http://localhost:4000/interview/answer", {
@@ -32,10 +33,14 @@ const AiInterview = () => {
             body: JSON.stringify({ id: "jdojdw-jdwijd", message: transcript }),
         })
             .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((data) => {
+                let utterance = new SpeechSynthesisUtterance(data);
+                window.speechSynthesis.speak(utterance);
+                console.log(data);
+            });
     };
     const updateTime = () => {
-        let t = time++; 
+        let t = time++;
         setTime(t);
         setTimeout(updateTime, 1000);
     };
@@ -89,9 +94,9 @@ const AiInterview = () => {
                 <p className="text-white text-center text-xs font-semibold p-0 m-0">
                     {state === -1 ? "Start Interview" : "Interview in progress"}
                 </p>
-                <h1 className="p-0 m-0">{
-                    `${ Math.floor(time / 60) }:${ time % 60 < 10 ? `0${time % 60}` : time % 60 }`
-                }</h1>
+                <h1 className="p-0 m-0">{`${Math.floor(time / 60)}:${
+                    time % 60 < 10 ? `0${time % 60}` : time % 60
+                }`}</h1>
             </div>
         </div>
     );

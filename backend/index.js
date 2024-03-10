@@ -42,7 +42,6 @@ const initialInterview = {
     you can ask the interviewee to describe a project they have worked on in the past
     you can ask the interviewee about some coding questions to check there logic building skills
     
-    based on the interviewee's answers you have to give segregated score of the skills and experience
     do not ask all questions at once and make it sequential do include roles in output
     `,
 };
@@ -55,9 +54,13 @@ app.post("/interview/start", async (req, res) => {
     messageInterview[id] = [
         initialInterview,
         {
-            role: "function",
+            role: "assistant",
             content: "interviewee's resume" + JSON.stringify(ats),
         },
+        {
+            role: "system",
+            content: "start the interview by asking the interviewee to introduce themselves and their experience and skills",
+        }
     ];
     messages = messageInterview[id];
     const response = await openai.createChatCompletion({
@@ -92,29 +95,50 @@ app.post("/interview/answer", async (req, res) => {
     res.json(response.data.choices[0].message.content);
 });
 
-app.post("/ats-text", async (req, res) => {
-    let text = req.body.text;
-    let id = req.body.id;
-    text = maskSensitiveContent(text);
+app.post("/interview/complete", async (req, res) => {
+    const id = req.body.id;
+    let messages = messageInterview[id];
     const response = await openai.createChatCompletion({
-        model: "gpt-4-turbo-preview",
+        model: "gpt-3.5-turbo",
         messages: [
             {
                 role: "system",
                 content:
-                    "you are an ats. you have to parse the resume and give the details of the candidate in form of raw json only with keys as experience, projects, skills, job_titles_suitable and achievements very concisely and not catagorised",
+                    "based on the interviewee's answers you have to give segregated score of the skills and experience",
             },
-            {
-                role: "user",
-                content: text,
-            },
+            ...messages,
         ],
     });
-    // console.log(response.data.choices[0].message.content);
-    let jsonString = response.data.choices[0].message.content.slice(7, -3);
-    ats[id] = JSON.parse(jsonString);
-    console.log(jsonString);
-    res.json({ text: JSON.parse(jsonString) });
+    res.json(response.data.choices[0].message.content);
+});
+
+app.post("/ats-text", async (req, res) => {
+    let text = req.body.text;
+    let id = req.body.id;
+    try {
+        res.json({ text: JSON.parse(ats[id]) });
+    } catch (e) {
+        text = maskSensitiveContent(text);
+        const response = await openai.createChatCompletion({
+            model: "gpt-4-turbo-preview",
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "you are an gender neutral ats. you have to parse the resume and give the details of the candidate in form of raw json only with keys as experience, projects, skills, job_titles_suitable and achievements very concisely and not catagorised",
+                },
+                {
+                    role: "user",
+                    content: text,
+                },
+            ],
+        });
+        // console.log(response.data.choices[0].message.content);
+        let jsonString = response.data.choices[0].message.content.slice(7, -3);
+        ats[id] = JSON.parse(jsonString);
+        console.log(jsonString);
+        res.json({ text: JSON.parse(jsonString) });
+    }
 });
 
 app.listen(port, () => {
