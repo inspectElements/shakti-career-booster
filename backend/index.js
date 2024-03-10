@@ -96,6 +96,8 @@ app.post("/interview/answer", async (req, res) => {
     res.json(response.data.choices[0].message.content);
 });
 
+const fs = require("fs");
+
 app.post("/interview/complete", async (req, res) => {
     const id = req.body.id;
     let messages = messageInterview[id];
@@ -115,6 +117,12 @@ app.post("/interview/complete", async (req, res) => {
             },
         ],
     });
+    let tobesaved = messages.concat(response.data.choices[0].message);
+    console.log(tobesaved);
+    fs.writeFileSync(
+        `./public/interviews/interview_${id}.json`,
+        JSON.stringify(tobesaved)
+    );
     res.json(response.data.choices[0].message.content);
 });
 
