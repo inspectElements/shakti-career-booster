@@ -42,7 +42,9 @@ const AiInterview = () => {
     const updateTime = () => {
         let t = time++;
         setTime(t);
-        setTimeout(updateTime, 1000);
+        if (state !== 2) {
+            setTimeout(updateTime, 1000);
+        }
     };
     return (
         <div className="h-screen w-screen flex items-center justify-center">

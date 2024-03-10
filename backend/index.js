@@ -59,8 +59,9 @@ app.post("/interview/start", async (req, res) => {
         },
         {
             role: "system",
-            content: "start the interview by asking the interviewee to introduce themselves and their experience and skills",
-        }
+            content:
+                "start the interview by asking the interviewee to introduce themselves",
+        },
     ];
     messages = messageInterview[id];
     const response = await openai.createChatCompletion({
@@ -99,14 +100,18 @@ app.post("/interview/complete", async (req, res) => {
     const id = req.body.id;
     let messages = messageInterview[id];
     const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-0125-preview",
         messages: [
+            ...messages,
             {
                 role: "system",
-                content:
-                    "based on the interviewee's answers you have to give segregated score of the skills and experience",
+                content: `based on the interviewee's answers you have to give a detailed and long feedback about the interviewee's skills and experience
+                    give a score out of 10 for the interviewee's performance in various fields.
+                    make scoring based on the interviewee's answers, his experience and skills
+                    do not ask further questions.
+                    give output in form of html with tailwind classes
+                    `,
             },
-            ...messages,
         ],
     });
     res.json(response.data.choices[0].message.content);

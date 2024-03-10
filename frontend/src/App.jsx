@@ -9,6 +9,7 @@ import RankingSystem from "./screens/RankingSystem";
 import InterviewSystem from "./screens/InterviewSystem";
 import Sahayak from "./screens/Sahayak";
 import Community from "./screens/Community";
+import InterviewResult from "./screens/InterviewResult";
 
 const router = createBrowserRouter([
     {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
     {
         path: "community",
         Component: Community,
+    },
+    {
+        path: "interview-result",
+        Component: InterviewResult,
     },
 ]);
 function App() {

@@ -1,9 +1,10 @@
 import "regenerator-runtime/runtime";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import SpeechRecognition, {
     useSpeechRecognition,
 } from "react-speech-recognition";
 import { Power, Mic } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AiChat = (props) => {
     return (
@@ -25,24 +26,30 @@ const AiChat = (props) => {
     );
 };
 
-// const MyChat = (props) => {
-//     return (
-//         <>
-//             <>
-//                 <div className="h-auto my-2 mr-2 w-full flex justify-end items-end">
-//                     <div className="h-auto w-[65%] my-2 rounded-lg py-3 px-6 text-lg bg-[#060A1E] border-[#FF6FA6] border-2 border-solid ">
-//                         {props.msg}
-//                     </div>
-//                 </div>
-//             </>
-//         </>
-//     );
-// };
+const MyChat = (props) => {
+    return (
+        <>
+            <>
+                <div className="h-auto my-2 mr-2 w-full flex justify-end items-end">
+                    <div className="h-auto w-[65%] my-2 rounded-lg py-3 px-6 text-lg bg-[#060A1E] border-[#FF6FA6] border-2 border-solid ">
+                        {props.msg}
+                    </div>
+                </div>
+            </>
+        </>
+    );
+};
 
 const InterviewSystem = () => {
+    let navigate = useNavigate();
     const { transcript } = useSpeechRecognition();
     const [state, setState] = useState(-1);
     const startInterview = () => {
+        let video = navigator.mediaDevices.getUserMedia({ video: true });
+        video.then((stream) => {
+            video_ref.current.srcObject = stream;
+            video_ref.current.play();
+        });
         fetch("http://localhost:4000/interview/start", {
             method: "POST",
             headers: {
@@ -51,13 +58,14 @@ const InterviewSystem = () => {
             body: JSON.stringify({ id: "jdojdw-jdwijd" }),
         })
             .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((data) => setMessages([{ content: data, type: "system" }]));
         setTime(new Date().getTime());
     };
 
     let [time, setTime] = useState(0);
     const stop = () => {
         SpeechRecognition.stopListening();
+        setMessages((prev) => [...prev, { content: transcript, type: "user" }]);
         fetch("http://localhost:4000/interview/answer", {
             method: "POST",
             headers: {
@@ -66,20 +74,60 @@ const InterviewSystem = () => {
             body: JSON.stringify({ id: "jdojdw-jdwijd", message: transcript }),
         })
             .then((res) => res.json())
-            .then((data) => console.log(data));
+            .then((data) => {
+                setMessages((prev) => [
+                    ...prev,
+                    { content: data, type: "system" },
+                ]);
+                let utterance = new SpeechSynthesisUtterance(data);
+                // make it speak like an alien
+                utterance.pitch = 2;
+                window.speechSynthesis.speak(utterance);
+            });
     };
     const updateTime = () => {
         let t = time++;
         setTime(t);
-        setTimeout(updateTime, 1000);
+        if (state !== 2) {
+            setTimeout(updateTime, 1000);
+        }
+    };
+    let [messages, setMessages] = useState([]);
+    let video_ref = useRef(null);
+
+    const end = () => {
+        fetch("http://localhost:4000/interview/complete", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ id: "jdojdw-jdwijd" }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                navigate("/interview-result", { state: data });
+            });
     };
     return (
         <>
             <section className="background h-screen w-screen flex justify-center items-center">
+                {state !== -1 && (
+                    <button
+                        className="absolute cursor-pointer bg-red-300 border-none py-2 px-4 text-md rounded-md  z-50"
+                        onClick={end}
+                    >
+                        End
+                    </button>
+                )}
                 <div className="h-[90vh] w-[90vw] flex flex-row gap-4 justify-center items-center">
                     <div className="h-full w-[25%] flex flex-col gap-4">
                         <div className="h-[75%] w-full bg-[#0E1121] border-[#3A4065] border-2 border-solid rounded-md flex flex-col gap-4 justify-start items-center pt-10">
-                            <div className="h-[80%] w-[80%] bg-white"></div>
+                            <div className="h-[80%] w-[80%] bg-white">
+                                <video
+                                    className="h-full w-full"
+                                    ref={video_ref}
+                                ></video>
+                            </div>
                             <h1 className="text-white ">
                                 Hello, Eshan Trivedi.
                             </h1>
@@ -102,11 +150,14 @@ const InterviewSystem = () => {
                         <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
                         <div className="h-[75%] w-[95%] flex flex-col justify-start items-start gap-1 mt-10">
                             {/* <h1 className="text-white ">All the Best Eshan.</h1> */}
-                            <AiChat
-                                msg={
-                                    "hi hello how are you hi hello how are you hi hello how are you hi hello how are you hi hello how are you hi hello how are you hi hello how are you hi hello how are you"
+                            {messages.map((msg, ind) => {
+                                if (msg.type === "user") {
+                                    return (
+                                        <MyChat key={ind} msg={msg.content} />
+                                    );
                                 }
-                            />
+                                return <AiChat key={ind} msg={msg.content} />;
+                            })}
                         </div>
                         <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
                         <div className="h-[5%] w-full flex flex-row justify-center items-center my-6 gap-4">

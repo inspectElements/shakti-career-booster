@@ -1,4 +1,3 @@
-import React from "react";
 import "regenerator-runtime/runtime";
 import { useState } from "react";
 import SpeechRecognition, {
@@ -9,6 +8,7 @@ import { Power, Mic } from "lucide-react";
 
 const Assessment = () => {
     const navigate = useNavigate();
+    const { transcript } = useSpeechRecognition();
     const [state, setState] = useState(-1);
     const startInterview = () => {
         fetch("http://localhost:4000/interview/start", {
@@ -35,6 +35,11 @@ const Assessment = () => {
         })
             .then((res) => res.json())
             .then((data) => console.log(data));
+    };
+    const updateTime = () => {
+        let t = time++;
+        setTime(t);
+        setTimeout(updateTime, 1000);
     };
     return (
         <>
