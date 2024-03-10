@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 
 const AiChat = (props) => {
     return (
@@ -35,6 +35,14 @@ const MyChat = (props) => {
 };
 
 const Sahayak = () => {
+    let [chats, setChats] = useState([
+        {
+            role: "bot",
+            content:
+                "Hello, I am Sahayak, your career counsellor. How can I help you today?",
+        },
+    ]);
+    let inputRef = useRef(null);
     return (
         <>
             <section className="resume-bg"></section>
@@ -45,23 +53,48 @@ const Sahayak = () => {
                 </h2>
                 <div className="w-full h-[2px] !bg-[#3A4065]" />
                 <div className="h-[75%] w-[95%] flex flex-col justify-start items-start gap-1 mt-10 !overflow-y-scroll overflow-hidden no-scrollbar">
-                    <AiChat
-                        msg={
-                            "hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi"
+                    {chats.map((chat, index) => {
+                        if (chat.role === "bot") {
+                            return <AiChat msg={chat.content} key={index} />;
+                        } else {
+                            return <MyChat msg={chat.content} key={index} />;
                         }
-                    />
-                    <MyChat
-                        msg={
-                            "hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi hi"
-                        }
-                    />
+                    })}
                 </div>
                 <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
                 <div className="h-[5%] w-full flex flex-row justify-center items-center gap-4">
-                    <input className="w-[75%] bg-[#3A4065] border-none outline-none h-[34px] text-xl text-white rounded-lg px-4"></input>
+                    <input
+                        ref={inputRef}
+                        className="w-[75%] bg-[#3A4065] border-none outline-none h-[34px] text-xl text-white rounded-lg px-4"
+                    ></input>
                     <button
                         className="h-9 none rounded-lg bg-[#FF5093] px-6 text-center align-middle font-sans text-[1.05rem] font-bold text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                         data-ripple-light="true"
+                        onClick={() => {
+                            let newChats = [...chats];
+                            newChats.push({
+                                role: "user",
+                                content: inputRef.current.value,
+                            });
+                            fetch("http://localhost:4000/sahayak-ask", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                    message: inputRef.current.value,
+                                }),
+                            })
+                                .then((response) => response.json())
+                                .then((data) => {
+                                    newChats.push({
+                                        role: "bot",
+                                        content: data,
+                                    });
+                                    setChats(newChats);
+                                });
+                            inputRef.current.value = "";
+                        }}
                     >
                         Ask Question
                     </button>

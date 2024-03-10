@@ -147,6 +147,24 @@ app.post("/ats-text", async (req, res) => {
     }
 });
 
+app.post("/sahayak-ask", async (req, res) => {
+    const msg = req.body.message;
+    const response = await openai.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+                role: "system",
+                content:
+                    "you are an AI career counsellor named sahayak. You have to answer the user's queries related to career and jobs. You can also ask the user about their skills and experience. do not answer off topic questions. do not ask further questions",
+            },
+            {
+                role: "user",
+                content: msg,
+            },
+        ],
+    });
+    res.json(response.data.choices[0].message.content);
+});
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
