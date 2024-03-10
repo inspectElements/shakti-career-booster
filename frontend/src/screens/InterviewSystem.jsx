@@ -80,7 +80,6 @@ const InterviewSystem = () => {
                     { content: data, type: "system" },
                 ]);
                 let utterance = new SpeechSynthesisUtterance(data);
-                // make it speak like an alien
                 utterance.pitch = 2;
                 window.speechSynthesis.speak(utterance);
             });
@@ -111,18 +110,10 @@ const InterviewSystem = () => {
     return (
         <>
             <section className="background h-screen w-screen flex justify-center items-center">
-                {state !== -1 && (
-                    <button
-                        className="absolute cursor-pointer bg-red-300 border-none py-2 px-4 text-md rounded-md  z-50"
-                        onClick={end}
-                    >
-                        End
-                    </button>
-                )}
                 <div className="h-[90vh] w-[90vw] flex flex-row gap-4 justify-center items-center">
                     <div className="h-full w-[25%] flex flex-col gap-4">
                         <div className="h-[75%] w-full bg-[#0E1121] border-[#3A4065] border-2 border-solid rounded-md flex flex-col gap-4 justify-start items-center pt-10">
-                            <div className="h-[80%] w-[80%] bg-white">
+                            <div className="h-[60%] w-[80%]">
                                 <video
                                     className="h-full w-full"
                                     ref={video_ref}
@@ -131,6 +122,15 @@ const InterviewSystem = () => {
                             <h1 className="text-white ">
                                 Hello, Eshan Trivedi.
                             </h1>
+                            {state !== -1 && (
+                                <button
+                                    className="w-[80%] middle none rounded-lg bg-[#1F243E] py-3 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                    data-ripple-light="true"
+                                    onClick={end}
+                                >
+                                    End your Interview.
+                                </button>
+                            )}
                         </div>
                         <div className="h-[23%] w-full bg-[#0E1121] border-[#3A4065] border-2 border-solid rounded-md flex flex-col justify-center items-center">
                             <h3 className="text-white m-0">
@@ -148,8 +148,7 @@ const InterviewSystem = () => {
                     <div className="h-full w-[80%] bg-[#0E1121] border-[#3A4065] border-2 border-solid rounded-md flex flex-col justify-start items-center">
                         <div className="interview-header"></div>
                         <div className="w-full h-[2px] mt-1 !bg-[#3A4065]" />
-                        <div className="h-[75%] w-[95%] flex flex-col justify-start items-start gap-1 mt-10">
-                            {/* <h1 className="text-white ">All the Best Eshan.</h1> */}
+                        <div className="h-[75%] w-[95%] flex flex-col justify-start items-start gap-1 mt-10 !overflow-y-scroll overflow-hidden no-scrollbar">
                             {messages.map((msg, ind) => {
                                 if (msg.type === "user") {
                                     return (

@@ -56,6 +56,17 @@ body {
   padding-bottom: 25px;
 }
 
+.sahayak-content {
+  width: 80vw;
+  height: 78vh;
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  padding-bottom: 25px;
+  border-radius: 20px;
+}
+
 .yogyata-content {
   background-image: url("yogyata-content.svg");
   background-repeat: no-repeat;
@@ -140,4 +151,15 @@ body {
   width: 95%;
   z-index: 100;
   margin-top: 15px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

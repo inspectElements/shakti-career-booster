@@ -108,6 +108,7 @@ app.post("/interview/complete", async (req, res) => {
                 content: `based on the interviewee's answers you have to give a detailed and long feedback about the interviewee's skills and experience
                     give a score out of 10 for the interviewee's performance in various fields.
                     make scoring based on the interviewee's answers, his experience and skills
+                    if the interview is not proper you can give 0 and negetive feedbacks
                     do not ask further questions.
                     give output in form of html with tailwind classes
                     `,
