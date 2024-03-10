@@ -4,6 +4,11 @@ import Resume from "./screens/Resume";
 import AiInterview from "./screens/AiInterview";
 import Profile from "./screens/Profile";
 import Assessment from "./screens/Assessment";
+import Dashboard from "./screens/Dashboard";
+import RankingSystem from "./screens/RankingSystem";
+import InterviewSystem from "./screens/InterviewSystem";
+import Sahayak from "./screens/Sahayak";
+import Community from "./screens/Community";
 
 const router = createBrowserRouter([
     {
@@ -25,6 +30,26 @@ const router = createBrowserRouter([
     {
         path: "/skill-assesment",
         Component: Assessment,
+    },
+    {
+        path: "/dashboard",
+        Component: Dashboard,
+    },
+    {
+        path: "/company-ranking",
+        Component: RankingSystem,
+    },
+    {
+        path: "interview-system",
+        Component: InterviewSystem,
+    },
+    {
+        path: "sahayak",
+        Component: Sahayak,
+    },
+    {
+        path: "community",
+        Component: Community,
     },
 ]);
 function App() {

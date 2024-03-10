@@ -77,7 +77,67 @@ body {
   margin-top: -7%;
 }
 
+.dashboard-content {
+  background-image: url("dashboard-content.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-attachment: fixed;
+  height: 100%;
+  width: 78%;
+  margin-top: -8%;
+}
+
 .dropzone {
   background-image: url("dropzone.png");
 }
 
+.interview-blob {
+  background: transparent;
+  position: absolute;
+  height: 180px;
+  width: 360px;
+  bottom: 0px;
+  right: 40px;
+  transform: translateY(-50%);
+}
+
+.samarthya-blob {
+  background: transparent;
+  position: absolute;
+  height: 180px;
+  width: 360px;
+  bottom: 0px;
+  right: 40px;
+  transform: translateY(-337px);
+}
+
+.sahayak-blob {
+  background: transparent;
+  position: absolute;
+  height: 180px;
+  width: 360px;
+  bottom: 0px;
+  right: 500px;
+  transform: translateY(-50%);
+}
+
+.community-blob {
+  background: transparent;
+  position: absolute;
+  height: 180px;
+  width: 360px;
+  top: 84px;
+  right: 40px;
+}
+
+.interview-header {
+  background-image: url("interview-header.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 10%;
+  width: 95%;
+  z-index: 100;
+  margin-top: 15px;
+}
