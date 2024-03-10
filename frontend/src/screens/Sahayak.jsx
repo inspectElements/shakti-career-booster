@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AiChat = (props) => {
     return (
@@ -35,6 +36,7 @@ const MyChat = (props) => {
 };
 
 const Sahayak = () => {
+    const navigate = useNavigate();
     let [chats, setChats] = useState([
         {
             role: "bot",
@@ -46,6 +48,15 @@ const Sahayak = () => {
     return (
         <>
             <section className="resume-bg"></section>
+            <button
+                onClick={() => {
+                    navigate("/dashboard");
+                }}
+                className="z-10 absolute top-[6%] right-[10%] middle none rounded-lg bg-[#1F243E] py-2 px-6 text-center align-middle font-sans text-[1.05rem] font-bold border-[#3A4065] text-white transition-all focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none cursor-pointer"
+                data-ripple-light="true"
+            >
+                Dashboard
+            </button>
             <div className="sahayak-content flex flex-col justify-start items-center gap-5 bg-[#0E1121] border-[#3A4065] border-2 border-solid">
                 <h2 className="text-white m-0 !mt-6">
                     <span className="text-[#FF5093]">Sahayak</span> Career
